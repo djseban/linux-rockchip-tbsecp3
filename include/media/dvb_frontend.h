@@ -497,6 +497,22 @@ struct dvb_frontend_ops {
 
 	struct dvb_tuner_ops tuner_ops;
 	struct analog_demod_ops analog_ops;
+
+	int (*set_property)(struct dvb_frontend* fe, u32 cmd, u32 data);
+
+	void(*spi_read)( struct dvb_frontend *fe,struct ecp3_info *ecp3inf);
+	void(*spi_write)( struct dvb_frontend *fe,struct ecp3_info *ecp3inf);
+
+	void(*mcu_read)( struct dvb_frontend *fe,struct mcu24cxx_info *mcu24cxxinf);
+	void(*mcu_write)( struct dvb_frontend *fe,struct mcu24cxx_info *mcu24cxxinf);
+
+	void(*reg_i2cread)( struct dvb_frontend *fe,struct usbi2c_access *pi2cinf);
+	void(*reg_i2cwrite)( struct dvb_frontend *fe,struct usbi2c_access *pi2cinf);
+
+	void(*eeprom_read)( struct dvb_frontend *fe,struct eeprom_info *peepinf);
+	void(*eeprom_write)( struct dvb_frontend *fe,struct eeprom_info *peepinf);
+    
+    int (*read_temp)(struct dvb_frontend* fe, s16* temp);
 };
 
 #ifdef __DVB_CORE__
@@ -628,6 +644,7 @@ struct dtv_frontend_properties {
 
 	/* Multistream specifics */
 	u32			stream_id;
+	u32			modcode;
 
 	/* Physical Layer Scrambling specifics */
 	u32			scrambling_sequence_index;

@@ -11,6 +11,21 @@ menu "Customise DVB Frontends"
 comment "Multistandard (satellite) frontends"
 	depends on DVB_CORE
 
+config DVB_SI2183
+	tristate "Silicon Labs Si2183 DVB-T/T2/C/C2/S/S2/S2X/ISDB-T demodulator"
+	depends on DVB_CORE && I2C
+	default m if !MEDIA_SUBDRV_AUTOSELECT
+	help
+	  Say Y when you want to support this frontend.
+
+config DVB_STV091X
+	tristate "STV091x based"
+	depends on DVB_CORE && I2C
+	default m if !MEDIA_SUBDRV_AUTOSELECT
+	help
+	  DVB-S/S2/DSS Multistandard Professional/Broadcast demodulators.
+	  Say Y when you want to support these frontends.
+
 config DVB_M88DS3103
 	tristate "Montage Technology M88DS3103"
 	depends on DVB_CORE && I2C && I2C_MUX
@@ -18,6 +33,14 @@ config DVB_M88DS3103
 	default m if !MEDIA_SUBDRV_AUTOSELECT
 	help
 	  Say Y when you want to support this frontend.
+
+config DVB_M88RS6060
+        tristate "Montage Technology M88RS6060 Demodulation and tuner"
+        depends on DVB_CORE && I2C 
+        select REGMAP_I2C
+        default m if !MEDIA_SUBDRV_AUTOSELECT
+        help
+          Say Y when you want to support this frontend.
 
 config DVB_MXL5XX
 	tristate "MaxLinear MxL5xx based tuner-demodulators"
@@ -44,6 +67,14 @@ config DVB_STB6100
 	  A Silicon tuner from ST used in conjunction with the STB0899
 	  demodulator. Say Y when you want to support this tuner.
 
+config DVB_MN88436
+	tristate "Panasonic MN88436"
+	depends on DVB_CORE && I2C
+	default m if !MEDIA_SUBDRV_AUTOSELECT
+	help
+	  An ATSC 8VSB and QAM64/256 tuner module. Say Y when you want
+	  to support this frontend.
+
 config DVB_STV090x
 	tristate "STV0900/STV0903(A/B) based"
 	depends on DVB_CORE && I2C
@@ -61,6 +92,14 @@ config DVB_STV0910
 
 	  Say Y when you want to support these frontends.
 
+config DVB_MXL58X
+	tristate "MaxLinear MXL58X based"
+	depends on DVB_CORE && I2C
+	default m if !MEDIA_SUBDRV_AUTOSELECT
+	help
+	  A DVB-S demod and tuner module.
+	  Say Y when you want to support this frontend.
+
 config DVB_STV6110x
 	tristate "STV6110/(A) based tuners"
 	depends on DVB_CORE && I2C
@@ -76,6 +115,29 @@ config DVB_STV6111
 	  A Silicon tuner that supports DVB-S and DVB-S2 modes
 
 	  Say Y when you want to support these frontends.
+
+config DVB_TAS2101
+	tristate "Tmax TAS2101 based"
+	depends on DVB_CORE && I2C
+	default m if !MEDIA_SUBDRV_AUTOSELECT
+	help
+	Say Y when you want to support this frontend.
+
+config DVB_GX1133
+	tristate "NationalChip GX1133 based"
+	depends on DVB_CORE && I2C
+	default m if !MEDIA_SUBDRV_AUTOSELECT
+	help
+	Say Y when you want to support this frontend.
+
+config DVB_TAS2971
+	tristate "Tmax TAS2971 based"
+	depends on DVB_CORE && I2C
+	default m if !MEDIA_SUBDRV_AUTOSELECT
+	help
+	Say Y when you want to support this frontend.
+
+source "drivers/media/dvb-frontends/stid135/Kconfig"
 
 comment "Multistandard (cable + terrestrial) frontends"
 	depends on DVB_CORE
@@ -487,6 +549,13 @@ config DVB_SI2168
 	help
 	  Say Y when you want to support this frontend.
 
+config DVB_CXD2878
+	tristate "sony cxd2878 family Dvb-T/T2/C(j83-a/b/c),ISDB-T/C,ATSC Demodulator" 
+	depends on DVB_CORE && I2C 
+	default m if !MEDIA_SUBDRV_AUTOSELECT
+	help
+	  Say Y when you want to support this frontend.
+
 config DVB_SP887X
 	tristate "Spase sp887x based"
 	depends on DVB_CORE && I2C
@@ -723,6 +792,14 @@ config DVB_MB86A20S
 	  A driver for Fujitsu mb86a20s ISDB-T/ISDB-Tsb demodulator.
 	  Say Y when you want to support this frontend.
 
+config DVB_MTV23X
+	tristate "RAONTECH mtv23x"
+	depends on DVB_CORE && I2C
+	default m if !MEDIA_SUBDRV_AUTOSELECT
+	help
+	  A driver for RAONTECH mtv23x DVB-T/ISDB-T demodulator.
+	  Say Y when you want to support this frontend.
+
 config DVB_S921
 	tristate "Sharp S921 frontend"
 	depends on DVB_CORE && I2C
@@ -919,6 +996,13 @@ config DVB_TDA665x
 
 	  Currently supported tuners:
 	  * Panasonic ENV57H12D5 (ET-50DT)
+
+config DVB_GX1503
+	tristate "National Chip GX1503b DMB-TH demodulator"
+	depends on DVB_CORE && I2C && I2C_MUX
+	default m if !MEDIA_SUBDRV_AUTOSELECT
+	help
+	  A DMB-TH tuner module. Say Y when you want to support this frontend.
 
 source "drivers/media/dvb-frontends/drx39xyj/Kconfig"
 

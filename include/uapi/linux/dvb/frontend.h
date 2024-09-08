@@ -313,6 +313,32 @@ enum fe_code_rate {
 	FEC_3_5,
 	FEC_9_10,
 	FEC_2_5,
+	FEC_1_3,
+	FEC_1_4,
+	FEC_5_9,
+	FEC_7_9,
+	FEC_4_15,
+	FEC_7_15,
+	FEC_8_15,
+	FEC_11_15,
+	FEC_13_18,
+	FEC_9_20,
+	FEC_11_20,
+	FEC_23_36,
+	FEC_25_36,
+	FEC_11_45,
+	FEC_13_45,
+	FEC_14_45,
+	FEC_26_45,
+	FEC_28_45,
+	FEC_29_45,
+	FEC_31_45,
+	FEC_32_45,
+	FEC_77_90, 
+	FEC_R_58,
+	FEC_R_60,
+	FEC_R_62,
+	FEC_R_5E,
 };
 
 /**
@@ -350,6 +376,19 @@ enum fe_modulation {
 	APSK_32,
 	DQPSK,
 	QAM_4_NR,
+	QAM_512,
+	QAM_1024,
+	QAM_4096,
+	APSK_64,
+	APSK_128,
+	APSK_256,
+	APSK_8L,
+	APSK_16L,
+	APSK_32L,
+	APSK_64L,
+	APSK_128L,
+	APSK_256L,
+	APSK_1024,
 };
 
 /**
@@ -513,7 +552,8 @@ enum fe_interleaving {
 
 #define DTV_STREAM_ID		42
 #define DTV_ISDBS_TS_ID_LEGACY	DTV_STREAM_ID
-#define DTV_DVBT2_PLP_ID_LEGACY	43
+#define DTV_DVBT2_PLP_ID_LEGACY	DTV_STREAM_ID
+#define DTV_MODCODE		43
 
 #define DTV_ENUM_DELSYS		44
 
@@ -581,6 +621,9 @@ enum fe_rolloff {
 	ROLLOFF_20,
 	ROLLOFF_25,
 	ROLLOFF_AUTO,
+	ROLLOFF_15,
+	ROLLOFF_10,
+	ROLLOFF_5,
 };
 
 /**
@@ -735,6 +778,7 @@ enum atscmh_rs_code_mode {
 
 #define NO_STREAM_ID_FILTER	(~0U)
 #define LNA_AUTO                (~0U)
+#define MODCODE_ALL         (~0U)
 
 /**
  * enum fecap_scale_params - scale types for the quality parameters.
@@ -1007,5 +1051,46 @@ struct dvb_frontend_event {
 #define FE_GET_FRONTEND		   _IOR('o', 77, struct dvb_frontend_parameters)
 
 #endif
+
+struct ecp3_info
+{
+	__u8 reg;
+	__u32 data;
+};
+
+struct mcu24cxx_info
+{
+	__u32 bassaddr;
+	__u8 reg;
+	__u32 data;
+};
+
+struct usbi2c_access
+{
+	__u8 chip_addr;
+	__u8 reg;
+	__u8 num;
+	__u8 buf[8];
+};
+
+struct eeprom_info
+{
+	__u8 reg;
+	__u8 data;
+};
+
+#define FE_ECP3FW_READ    _IOR('o', 90, struct ecp3_info)
+#define FE_ECP3FW_WRITE   _IOW('o', 91, struct ecp3_info)
+
+#define FE_24CXX_READ    _IOR('o', 92, struct mcu24cxx_info)
+#define FE_24CXX_WRITE   _IOW('o', 93, struct mcu24cxx_info)
+
+#define FE_REGI2C_READ    _IOR('o', 94, struct usbi2c_access)
+#define FE_REGI2C_WRITE   _IOW('o', 95, struct usbi2c_access)
+
+#define FE_EEPROM_READ    _IOR('o', 96, struct eeprom_info)
+#define FE_EEPROM_WRITE   _IOW('o', 97, struct eeprom_info)
+
+#define FE_READ_TEMP	  _IOR('o', 98, __s16)
 
 #endif /*_DVBFRONTEND_H_*/

@@ -33,6 +33,7 @@ obj-$(CONFIG_VIDEO_IVTV) += ivtv/
 obj-$(CONFIG_VIDEO_SAA7134) += saa7134/
 obj-$(CONFIG_VIDEO_SAA7164) += saa7164/
 obj-$(CONFIG_VIDEO_SOLO6X10) += solo6x10/
+obj-$(CONFIG_DVB_TBSECP3) += tbsecp3/
 obj-$(CONFIG_VIDEO_TW5864) += tw5864/
 obj-$(CONFIG_VIDEO_TW686X) += tw686x/
 obj-$(CONFIG_VIDEO_TW68) += tw68/

@@ -8,6 +8,7 @@ tda18271-objs := tda18271-maps.o tda18271-common.o tda18271-fe.o
 
 # Please keep it alphabetically sorted by Kconfig name
 # (e. g. LC_ALL=C sort Makefile)
+obj-$(CONFIG_MEDIA_TUNER_AV201X) += av201x.o
 obj-$(CONFIG_MEDIA_TUNER_E4000) += e4000.o
 obj-$(CONFIG_MEDIA_TUNER_FC0011) += fc0011.o
 obj-$(CONFIG_MEDIA_TUNER_FC0012) += fc0012.o
@@ -26,10 +27,14 @@ obj-$(CONFIG_MEDIA_TUNER_MT2266) += mt2266.o
 obj-$(CONFIG_MEDIA_TUNER_MXL301RF) += mxl301rf.o
 obj-$(CONFIG_MEDIA_TUNER_MXL5005S) += mxl5005s.o
 obj-$(CONFIG_MEDIA_TUNER_MXL5007T) += mxl5007t.o
+obj-$(CONFIG_MEDIA_TUNER_MXL5007T) += mxl5007t.o
+obj-$(CONFIG_MEDIA_TUNER_MXL603) += mxl603.o
+obj-$(CONFIG_MEDIA_TUNER_STV6120) += stv6120.o
 obj-$(CONFIG_MEDIA_TUNER_QM1D1B0004) += qm1d1b0004.o
 obj-$(CONFIG_MEDIA_TUNER_QM1D1C0042) += qm1d1c0042.o
 obj-$(CONFIG_MEDIA_TUNER_QT1010) += qt1010.o
 obj-$(CONFIG_MEDIA_TUNER_R820T) += r820t.o
+obj-$(CONFIG_MEDIA_TUNER_RDA5816) += rda5816.o
 obj-$(CONFIG_MEDIA_TUNER_SI2157) += si2157.o
 obj-$(CONFIG_MEDIA_TUNER_SIMPLE) += tuner-simple.o
 obj-$(CONFIG_MEDIA_TUNER_SIMPLE) += tuner-types.o

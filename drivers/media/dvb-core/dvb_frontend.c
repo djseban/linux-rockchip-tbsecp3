@@ -40,7 +40,7 @@ static int dvb_frontend_debug;
 static int dvb_shutdown_timeout;
 static int dvb_force_auto_inversion;
 static int dvb_override_tune_delay;
-static int dvb_powerdown_on_sleep = 1;
+static int dvb_powerdown_on_sleep;
 static int dvb_mfe_wait_time = 5;
 
 module_param_named(frontend_debug, dvb_frontend_debug, int, 0644);
@@ -926,6 +926,7 @@ static void dvb_frontend_get_frequency_limits(struct dvb_frontend *fe,
 
 	/* If the standard is for satellite, convert frequencies to kHz */
 	switch (c->delivery_system) {
+	case SYS_DSS:
 	case SYS_DVBS:
 	case SYS_DVBS2:
 	case SYS_TURBO:
@@ -951,6 +952,7 @@ static u32 dvb_frontend_get_stepsize(struct dvb_frontend *fe)
 	u32 step = max(fe_step, tuner_step);
 
 	switch (c->delivery_system) {
+	case SYS_DSS:
 	case SYS_DVBS:
 	case SYS_DVBS2:
 	case SYS_TURBO:
@@ -982,6 +984,7 @@ static int dvb_frontend_check_parameters(struct dvb_frontend *fe)
 
 	/* range check: symbol rate */
 	switch (c->delivery_system) {
+	case SYS_DSS:
 	case SYS_DVBS:
 	case SYS_DVBS2:
 	case SYS_TURBO:
@@ -1045,9 +1048,14 @@ static int dvb_frontend_clear_cache(struct dvb_frontend *fe)
 	}
 
 	c->stream_id = NO_STREAM_ID_FILTER;
+    c->modcode = MODCODE_ALL;
 	c->scrambling_sequence_index = 0;/* default sequence */
 
 	switch (c->delivery_system) {
+	case SYS_DSS:
+		c->modulation = QPSK;
+		c->rolloff = ROLLOFF_20;
+		break;
 	case SYS_DVBS:
 	case SYS_DVBS2:
 	case SYS_TURBO:
@@ -1119,7 +1127,7 @@ static char *dtv_cmds[DTV_MAX_COMMAND + 1] = {
 	_DTV_CMD(DTV_ISDBT_LAYERC_TIME_INTERLEAVING),
 
 	_DTV_CMD(DTV_STREAM_ID),
-	_DTV_CMD(DTV_DVBT2_PLP_ID_LEGACY),
+	_DTV_CMD(DTV_MODCODE),
 	_DTV_CMD(DTV_SCRAMBLING_SEQUENCE_INDEX),
 	_DTV_CMD(DTV_LNA),
 
@@ -1470,8 +1478,12 @@ static int dtv_property_process_get(struct dvb_frontend *fe,
 
 	/* Multistream support */
 	case DTV_STREAM_ID:
-	case DTV_DVBT2_PLP_ID_LEGACY:
 		tvp->u.data = c->stream_id;
+		break;
+
+	/* Modcode support */
+	case DTV_MODCODE:
+		tvp->u.data = c->modcode;
 		break;
 
 	/* Physical layer scrambling support */
@@ -1829,6 +1841,7 @@ static void prepare_tuning_algo_parameters(struct dvb_frontend *fe)
 	} else {
 		/* default values */
 		switch (c->delivery_system) {
+		case SYS_DSS:
 		case SYS_DVBS:
 		case SYS_DVBS2:
 		case SYS_ISDBS:
@@ -1891,6 +1904,14 @@ static int dtv_property_process_set(struct dvb_frontend *fe,
 		dev_dbg(fe->dvb->device,
 			"%s: SET cmd 0x%08x (%s) to 0x%08x\n",
 			__func__, cmd, dtv_cmd_name(cmd), data);
+
+	/* Allow the frontend to validate incoming properties */
+	if (fe->ops.set_property) {
+		r = fe->ops.set_property(fe, cmd, data);
+		if (r < 0)
+			return r;
+	}
+
 	switch (cmd) {
 	case DTV_CLEAR:
 		/*
@@ -2024,8 +2045,12 @@ static int dtv_property_process_set(struct dvb_frontend *fe,
 
 	/* Multistream support */
 	case DTV_STREAM_ID:
-	case DTV_DVBT2_PLP_ID_LEGACY:
 		c->stream_id = data;
+		break;
+
+    /* Modcode support */
+	case DTV_MODCODE:
+		c->modcode = data;
 		break;
 
 	/* Physical layer scrambling support */
@@ -2296,6 +2321,9 @@ static int dtv_set_frontend(struct dvb_frontend *fe)
 	case SYS_DVBC_ANNEX_C:
 		rolloff = 113;
 		break;
+	case SYS_DSS:
+		rolloff = 120;
+		break;
 	case SYS_DVBS:
 	case SYS_TURBO:
 	case SYS_ISDBS:
@@ -2430,6 +2458,77 @@ static int dvb_frontend_handle_ioctl(struct file *file,
 	dev_dbg(fe->dvb->device, "%s:\n", __func__);
 
 	switch (cmd) {
+
+    case FE_READ_TEMP:
+		if (fe->ops.read_temp) {
+				err = fe->ops.read_temp(fe, parg);
+		}
+		break;
+
+	case FE_ECP3FW_READ:
+		//printk("FE_ECP3FW_READ *****************");
+		if (fe->ops.spi_read) {
+			struct ecp3_info *info = parg;	
+			fe->ops.spi_read(fe, info);
+		}
+		err = 0;
+		break;
+	case FE_ECP3FW_WRITE:
+		//printk("FE_ECP3FW_WRITE *****************");
+		if (fe->ops.spi_write) {
+			struct ecp3_info *info = parg;	
+			fe->ops.spi_write(fe, info);
+		
+		}
+		err = 0;
+		break;
+
+	case FE_24CXX_READ:
+		//printk("FE_24CXX_READ *****************");
+		if (fe->ops.mcu_read) {
+			struct mcu24cxx_info *info = parg;	
+			fe->ops.mcu_read(fe, info);
+		}
+		err = 0;
+		break;
+	case FE_24CXX_WRITE:
+		//printk("FE_24CXX_WRITE *****************");
+		if (fe->ops.mcu_write) {
+			struct mcu24cxx_info *info = parg;	
+			fe->ops.mcu_write(fe, info);
+		
+		}
+		err = 0;
+		break;
+	case FE_REGI2C_READ:
+		if (fe->ops.reg_i2cread) {
+			struct usbi2c_access *info = parg;	
+			fe->ops.reg_i2cread(fe, info);
+		}
+		err = 0;
+		break;
+	case FE_REGI2C_WRITE:
+		if (fe->ops.reg_i2cwrite) {
+			struct usbi2c_access *info = parg;	
+			fe->ops.reg_i2cwrite(fe, info);
+		}
+		err = 0;
+		break;
+	case FE_EEPROM_READ:
+		if (fe->ops.eeprom_read) {
+			struct eeprom_info *info = parg;	
+			fe->ops.eeprom_read(fe, info);
+		}
+		err = 0;
+		break;
+	case FE_EEPROM_WRITE:
+		if (fe->ops.eeprom_write) {
+			struct eeprom_info *info = parg;	
+			fe->ops.eeprom_write(fe, info);
+		}
+		err = 0;
+		break;
+
 	case FE_SET_PROPERTY: {
 		struct dtv_properties *tvps = parg;
 		struct dtv_property *tvp = NULL;
@@ -2672,37 +2771,25 @@ static int dvb_frontend_handle_ioctl(struct file *file,
 
 	case FE_READ_BER:
 		if (fe->ops.read_ber) {
-			if (fepriv->thread)
 				err = fe->ops.read_ber(fe, parg);
-			else
-				err = -EAGAIN;
 		}
 		break;
 
 	case FE_READ_SIGNAL_STRENGTH:
 		if (fe->ops.read_signal_strength) {
-			if (fepriv->thread)
 				err = fe->ops.read_signal_strength(fe, parg);
-			else
-				err = -EAGAIN;
 		}
 		break;
 
 	case FE_READ_SNR:
 		if (fe->ops.read_snr) {
-			if (fepriv->thread)
 				err = fe->ops.read_snr(fe, parg);
-			else
-				err = -EAGAIN;
 		}
 		break;
 
 	case FE_READ_UNCORRECTED_BLOCKS:
 		if (fe->ops.read_ucblocks) {
-			if (fepriv->thread)
 				err = fe->ops.read_ucblocks(fe, parg);
-			else
-				err = -EAGAIN;
 		}
 		break;
 
@@ -2762,7 +2849,17 @@ static int dvb_frontend_open(struct inode *inode, struct file *file)
 	if (fe->exit == DVB_FE_DEVICE_REMOVED)
 		return -ENODEV;
 
-	if (adapter->mfe_shared) {
+	if (adapter->mfe_shared == 2) {
+		mutex_lock(&adapter->mfe_lock);
+		if ((file->f_flags & O_ACCMODE) != O_RDONLY) {
+			if (adapter->mfe_dvbdev &&
+			    !adapter->mfe_dvbdev->writers) {
+				mutex_unlock(&adapter->mfe_lock);
+				return -EBUSY;
+			}
+			adapter->mfe_dvbdev = dvbdev;
+		}
+	} else if (adapter->mfe_shared) {
 		mutex_lock(&adapter->mfe_lock);
 
 		if (!adapter->mfe_dvbdev)

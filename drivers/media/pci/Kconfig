@@ -57,6 +57,7 @@ source "drivers/media/pci/pluto2/Kconfig"
 source "drivers/media/pci/pt1/Kconfig"
 source "drivers/media/pci/pt3/Kconfig"
 source "drivers/media/pci/smipcie/Kconfig"
+source "drivers/media/pci/tbsecp3/Kconfig"
 
 endif
 
