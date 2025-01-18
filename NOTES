@@ -1,7 +1,7 @@
 # First, configure linux kernel (config_example can be used)
 
 # Compile
-make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- modules Image dtb
+make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- modules Image dtbs
 
 # To make initrd export modules
 make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- modules_install INSTALL_MOD_PATH=./modules
