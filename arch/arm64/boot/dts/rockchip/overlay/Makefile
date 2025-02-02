@@ -1,7 +1,21 @@
 # SPDX-License-Identifier: GPL-2.0
 dtbo-$(CONFIG_ARCH_ROCKCHIP) += \
+	armsom-cm5-io-camera-imx219-cs0.dtbo \
+	armsom-cm5-io-camera-ov13850-cs1.dtbo \
+	armsom-cm5-io-display-10hd.dtbo \
+	armsom-cm5-rpi-cm4-io-camera0.dtbo \
+	armsom-cm5-rpi-cm4-io-camera1.dtbo \
+	armsom-cm5-rpi-cm4-io-display.dtbo \
+	armsom-sige5-camera-ov13850-cs0.dtbo \
+	armsom-sige5-camera-ov13850-cs1.dtbo \
+	armsom-sige5-display-10hd.dtbo \
 	armsom-sige7-camera-imx415-4k.dtbo \
+	armsom-sige7-camera-ov13850-csi0.dtbo \
+	armsom-sige7-camera-ov13850-csi1.dtbo \
 	armsom-sige7-display-10hd.dtbo \
+	armsom-w3-camera-imx419-csi.dtbo \
+	armsom-w3-camera-ov13850-csi.dtbo \
+	armsom-w3-display-10hd.dtbo \
 	orangepi-5-lcd1.dtbo \
 	orangepi-5-lcd2.dtbo \
 	orangepi-5-sata.dtbo \
@@ -18,6 +32,7 @@ dtbo-$(CONFIG_ARCH_ROCKCHIP) += \
 	orangepi-5-pro-cam1.dtbo \
 	orangepi-5-pro-cam2.dtbo \
 	orangepi-5-pro-disable-leds.dtbo \
+	rock-3a-sata.dtbo \
 	rock-5a-hdmi-8k.dtbo \
 	rock-5a-i2c5-rtc-hym8563.dtbo \
 	rock-5a-radxa-camera-4k.dtbo \
@@ -68,9 +83,29 @@ dtbo-$(CONFIG_ARCH_ROCKCHIP) += \
 	khadas-edge2-cam1.dtbo \
 	khadas-edge2-cam2.dtbo \
 	khadas-edge2-cam3.dtbo \
+	nanopi-m6-display-dsi0-yx35.dtbo \
+	nanopi-m6-display-dsi1-yx35.dtbo \
 	rockchip-rk3588-opp-oc-24ghz.dtbo \
 	rockchip-rk3588-panthor-gpu.dtbo \
 	rk3566-roc-pc-sata2.dtbo \
+	rk3576-can1-m1.dtbo \
+	rk3576-i2c0-m1.dtbo \
+	rk3576-i2c1-m0.dtbo \
+	rk3576-i2c2-m0.dtbo \
+	rk3576-i2c3-m0.dtbo \
+	rk3576-i2c4-m3.dtbo \
+	rk3576-i2c5-m3.dtbo \
+	rk3576-i2c6-m0.dtbo \
+	rk3576-i2c7-m1.dtbo \
+	rk3576-i2c8-m2.dtbo \
+	rk3576-pwm1-ch0-m3.dtbo \
+	rk3576-pwm2-ch6-m2.dtbo \
+	rk3576-pwm2-ch7-m2.dtbo \
+	rk3576-spi4-m0-cs1-spidev.dtbo \
+	rk3576-uart2-m2.dtbo \
+	rk3576-uart6-m3.dtbo \
+	rk3576-uart7-m0.dtbo \
+	rk3576-uart10-m2.dtbo \
 	rk3588-can0-m0.dtbo \
 	rk3588-can1-m0.dtbo \
 	rk3588-can1-m1.dtbo \
